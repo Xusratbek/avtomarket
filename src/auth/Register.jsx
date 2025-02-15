@@ -1,6 +1,40 @@
 import React from 'react'
-
+import auth from '../../service/auth'
 const Register = () => {
+
+
+  const initialValues = {
+    username: "",
+    email: "",
+    password: "",
+};
+const handleSubmit = async (values) => {
+  console.log(values); 
+  try {
+      const response = await auth.sign_up(values);
+      if (response.status === 201) {
+          notification.success({
+              message: 'Registration Successful',
+              description: 'You have successfully registered.',
+          });
+          navigate("/");
+      }
+  } catch (error) {
+      console.log(error.response); 
+      notification.error({
+          message: 'Registration Failed',
+          description: error.response?.data?.message || 'An unexpected error occurred.',
+      });
+  }
+};
+
+const onFinish = (values) => {
+  console.log('Received values of form: ', values);
+  handleSubmit(values); 
+};
+
+
+
   return (
     <div className="flex h-screen">
     {/* Left Section */}
@@ -14,7 +48,7 @@ const Register = () => {
     <div className="w-1/2 bg-white flex flex-col justify-center items-center">
       <h2 className="text-3xl font-bold mb-4">Hello!</h2>
       <p className="mb-8">Sign Up to Get Started</p>
-      <form className="w-3/4">
+      <form  initialValues={initialValues} onFinish={onFinish} className="w-3/4">
         <div className="mb-4">
           <input
             type="text"
